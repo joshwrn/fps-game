@@ -1,6 +1,7 @@
 import React, { useRef } from 'react'
 
 import { useGLTF } from '@react-three/drei'
+import type { Group, Mesh } from 'three'
 import type { GLTF } from 'three-stdlib'
 
 type GLTFResult = GLTF & {
@@ -13,15 +14,16 @@ type GLTFResult = GLTF & {
   }
 }
 
-export default function FlashlightModel(props: JSX.IntrinsicElements[`mesh`]) {
-  const group = useRef<THREE.Group>(null)
+export default function FlashlightModel(
+  props: JSX.IntrinsicElements[`group`],
+): JSX.Element {
+  const group = useRef<Group>(null)
 
   const { nodes, materials } = useGLTF(
     `/models/flashlight-model/scene.gltf`,
   ) as GLTFResult
 
   return (
-    // @ts-ignore
     <group ref={group} {...props} dispose={null}>
       <group rotation={[-Math.PI / 2, 0, 0]}>
         <group rotation={[Math.PI / 2, 0, 0]}>

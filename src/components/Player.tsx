@@ -5,7 +5,7 @@ import { useSphere } from '@react-three/cannon'
 import type { MeshProps } from '@react-three/fiber'
 import { useThree, useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
-import type { Mesh } from 'three'
+import type { Group, Mesh } from 'three'
 
 import Flashlight from './Flashlight/Flashlight'
 import { randomNumber } from '../utils/randomNumber'
@@ -38,7 +38,7 @@ const usePlayerControls = ({
   ref,
   api,
 }: {
-  flashLightRef: React.RefObject<Mesh>
+  flashLightRef: React.RefObject<Group>
   ref: React.RefObject<Mesh>
   api: PublicApi
 }) => {
@@ -84,17 +84,19 @@ const usePlayerControls = ({
       .applyEuler(camera.rotation)
     speed.fromArray(velocity.current)
 
-    // // move flashlight
-    // flashLightRef.current.children[0].rotation.x = THREE.MathUtils.lerp(
-    //   flashLightRef.current.children[0].rotation.x,
-    //   Math.sin((1 < speed.length()) * state.clock.elapsedTime * 10) /
-    //     randomNumber(25, 50),
-    //   0.1,
-    // )
-    // flashLightRef.current.rotation.copy(camera.rotation)
-    // flashLightRef.current.position
-    //   .copy(camera.position)
-    //   .add(camera.getWorldDirection(rotation).multiplyScalar(1))
+    if (flashLightRef?.current?.children[0]) {
+      // move flashlight
+      flashLightRef.current.children[0].rotation.x = THREE.MathUtils.lerp(
+        flashLightRef.current.children[0].rotation.x,
+        Math.sin(speed.length() * state.clock.elapsedTime * 10) /
+          randomNumber(25, 50),
+        0.1,
+      )
+      flashLightRef.current.rotation.copy(camera.rotation)
+      flashLightRef.current.position
+        .copy(camera.position)
+        .add(camera.getWorldDirection(rotation).multiplyScalar(1))
+    }
 
     // jump
     api.velocity.set(direction.x, velocity.current[1], direction.z)
@@ -105,7 +107,7 @@ const usePlayerControls = ({
 }
 
 export default function Player(props: SphereProps): JSX.Element {
-  const flashLightRef = useRef<Mesh>(null)
+  const flashLightRef = useRef<Group>(null)
   const [ref, api] = useSphere<Mesh>(() => ({
     mass: 1,
     type: `Dynamic`,
@@ -116,13 +118,21 @@ export default function Player(props: SphereProps): JSX.Element {
   usePlayerControls({ flashLightRef, ref, api })
   const [isLightOn, setIsLightOn] = useState(false)
 
-  // const handleLight = () => {
-  //   flashLightRef.current.children[0].rotation.x = -0.05
-  //   setIsLightOn(!isLightOn)
-  // }
+  const handleLight = () => {
+    if (!flashLightRef.current?.children[0]) return
+    flashLightRef.current.children[0].rotation.x = -0.05
+    setIsLightOn((prev) => !prev)
+  }
   return (
     <>
       <mesh ref={ref} />
+      <group ref={flashLightRef} onPointerMissed={handleLight}>
+        <Flashlight
+          isLightOn={isLightOn}
+          position={[2, -1.8, -1.5]}
+          rotation={[0, Math.PI / 2 + 0.1, 0]}
+        />
+      </group>
     </>
   )
 }
