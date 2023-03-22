@@ -4,15 +4,18 @@ import React, { useState } from 'react'
 import styled from '@emotion/styled'
 import { Physics, usePlane, useBox } from '@react-three/cannon'
 import { PointerLockControls, Stars, Float } from '@react-three/drei'
+import type { MeshProps } from '@react-three/fiber'
 import { Canvas } from '@react-three/fiber'
+import type { Mesh } from 'three'
 
-function Box(props) {
+import Player from './Player'
+
+function Box(props: MeshProps) {
   const [hovered, setHover] = useState(false)
   const [active, setActive] = useState(false)
-  const [ref, api] = useBox(() => ({
+  const [ref, api] = useBox<Mesh>(() => ({
     mass: 1,
     args: [1, 1, 1],
-    ...props,
   }))
   return (
     <mesh
@@ -37,7 +40,7 @@ export const Scene = (): ReactElement => {
         <Stars />
         <ambientLight intensity={1} />
         <Physics gravity={[0, -60, 0]}>
-          {/* <Player /> */}
+          <Player />
           <Float
             speed={4}
             rotationIntensity={3}
@@ -55,7 +58,7 @@ export const Scene = (): ReactElement => {
 }
 
 export const Ground = (): React.ReactElement => {
-  const [ref] = usePlane(() => ({ rotation: [-Math.PI / 2, 0, 0] }))
+  const [ref] = usePlane<Mesh>(() => ({ rotation: [-Math.PI / 2, 0, 0] }))
   return (
     <mesh ref={ref} receiveShadow>
       <planeGeometry args={[1000, 1000]} />
