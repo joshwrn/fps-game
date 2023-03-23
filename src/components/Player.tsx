@@ -5,12 +5,13 @@ import { useSphere } from '@react-three/cannon'
 import type { Group, Mesh } from 'three'
 
 import Flashlight from './Flashlight/Flashlight'
-import { useFlashlightMovement } from '@/logic/movement/useFlashlightMovement'
+import { useUpdateFlashlightPosition } from '@/logic/flashlight/useUpdateFlashlightPostion'
 import { useMovementControls } from '@/logic/movement/useMovementControls'
+import { useUpdatePlayerPosition } from '@/logic/movement/useUpdatePlayerPosition'
 
 export default function Player(props: SphereProps): JSX.Element {
   const flashlightRef = useRef<Group>(null)
-  const [playerRef, api] = useSphere<Mesh>(() => ({
+  const [playerRef, playerApi] = useSphere<Mesh>(() => ({
     mass: 1,
     type: `Dynamic`,
     position: [0, 10, 0],
@@ -19,18 +20,21 @@ export default function Player(props: SphereProps): JSX.Element {
   }))
 
   useMovementControls()
-  useFlashlightMovement({
-    flashlightRef: flashlightRef,
+  const { playerSpeed } = useUpdatePlayerPosition({
     playerRef,
-    api,
+    playerApi,
+  })
+  useUpdateFlashlightPosition({
+    flashlightRef,
+    playerSpeed,
   })
 
   const [isLightOn, setIsLightOn] = useState(false)
 
   const handleLight = () => {
+    setIsLightOn((prev) => !prev)
     if (!flashlightRef.current?.children[0]) return
     flashlightRef.current.children[0].rotation.x = -0.05
-    setIsLightOn((prev) => !prev)
   }
 
   return (

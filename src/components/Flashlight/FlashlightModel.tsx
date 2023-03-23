@@ -14,27 +14,35 @@ type GLTFResult = GLTF & {
   }
 }
 
+const FlashlightMaterial = () => {
+  return (
+    <meshStandardMaterial
+      attach="material"
+      color="#000000"
+      roughness={0}
+      metalness={0.1}
+      envMapIntensity={1}
+    />
+  )
+}
+
 export default function FlashlightModel(
   props: JSX.IntrinsicElements[`group`],
 ): JSX.Element {
   const group = useRef<Group>(null)
 
-  const { nodes, materials } = useGLTF(
-    `/models/flashlight-model/scene.gltf`,
-  ) as GLTFResult
+  const { nodes } = useGLTF(`/models/flashlight-model/scene.gltf`) as GLTFResult
 
   return (
     <group ref={group} {...props} dispose={null}>
       <group rotation={[-Math.PI / 2, 0, 0]}>
         <group rotation={[Math.PI / 2, 0, 0]}>
-          <mesh
-            geometry={nodes.defaultMaterial.geometry}
-            material={materials.DefaultMaterial}
-          />
-          <mesh
-            geometry={nodes.defaultMaterial_1.geometry}
-            material={materials.DefaultMaterial}
-          />
+          <mesh geometry={nodes.defaultMaterial.geometry}>
+            <FlashlightMaterial />
+          </mesh>
+          <mesh geometry={nodes.defaultMaterial_1.geometry}>
+            <FlashlightMaterial />
+          </mesh>
         </group>
       </group>
     </group>

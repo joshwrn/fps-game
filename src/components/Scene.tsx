@@ -3,7 +3,14 @@ import React, { useState } from 'react'
 
 import styled from '@emotion/styled'
 import { Physics, usePlane, useBox } from '@react-three/cannon'
-import { PointerLockControls, Stars, Float } from '@react-three/drei'
+import {
+  PointerLockControls,
+  Stars,
+  Float,
+  Sky,
+  Environment,
+  Sparkles,
+} from '@react-three/drei'
 import type { MeshProps } from '@react-three/fiber'
 import { Canvas } from '@react-three/fiber'
 import type { Mesh } from 'three'
@@ -28,7 +35,13 @@ function Box(props: MeshProps) {
       onPointerOut={(event) => setHover(false)}
     >
       <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color={hovered ? `hotpink` : `orange`} />
+      <meshStandardMaterial
+        color={hovered ? `hotpink` : `orange`}
+        metalness={1}
+        roughness={0.5}
+        attach="material"
+        envMapIntensity={0.2}
+      />
     </mesh>
   )
 }
@@ -37,8 +50,13 @@ export const Scene = (): ReactElement => {
   return (
     <CanvasContainer>
       <Canvas shadows gl={{ alpha: false }} camera={{ fov: 80 }}>
-        <Stars />
-        <ambientLight intensity={1} />
+        <fog attach="fog" args={[`black`, 0, 50]} />
+        <Environment preset="night" />
+        <hemisphereLight
+          intensity={1}
+          color="rgb(0, 0, 0)"
+          groundColor="rgb(255, 255, 255)"
+        />
         <Physics gravity={[0, -60, 0]}>
           <Player />
           <Float
@@ -62,7 +80,13 @@ export const Ground = (): React.ReactElement => {
   return (
     <mesh ref={ref} receiveShadow>
       <planeGeometry args={[1000, 1000]} />
-      <meshStandardMaterial color="rgba(0, 48, 10, 0.2)" />
+      <meshStandardMaterial
+        color="rgb(86, 187, 64)"
+        metalness={1}
+        roughness={0.5}
+        attach="material"
+        envMapIntensity={0.2}
+      />
     </mesh>
   )
 }

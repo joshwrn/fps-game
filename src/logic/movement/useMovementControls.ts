@@ -1,5 +1,4 @@
-import { useEffect } from 'react'
-
+import { isHotkeyPressed, useHotkeys } from 'react-hotkeys-hook'
 import { create } from 'zustand'
 
 export type Movement = {
@@ -35,37 +34,43 @@ export const useMovementStore = create<{
   left: boolean
   right: boolean
   jump: boolean
-  setMovement: (movement: Movement) => void
+  setMovement: (movement: Partial<Movement>) => void
 }>((set) => ({
   forward: false,
   backward: false,
   left: false,
   right: false,
   jump: false,
-  setMovement: (movement: Movement) => set(movement),
+  setMovement: (movement: Partial<Movement>) =>
+    set((prev) => ({ ...prev, ...movement })),
 }))
 
-export const useMovementControls = (): void => {
-  const [movement, setMovement] = useMovementStore((s) => [s, s.setMovement])
+export const isSprinting = (): boolean => isHotkeyPressed(`shift`)
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
+export const useMovementControls = (): void => {
+  const [setMovement] = useMovementStore((s) => [s.setMovement])
+  useHotkeys(
+    [`w`, `s`, `a`, `d`, `space`],
+    (e) => {
       const code = keyGuard(e)
       if (!code) return
       const key = moveFieldByKey(code)
-      setMovement({ ...movement, [key]: true })
-    }
-    const handleKeyUp = (e: KeyboardEvent) => {
+      setMovement({ [key]: true })
+    },
+    {
+      keydown: true,
+    },
+  )
+  useHotkeys(
+    [`w`, `s`, `a`, `d`, `space`],
+    (e) => {
       const code = keyGuard(e)
       if (!code) return
       const key = moveFieldByKey(code)
-      setMovement({ ...movement, [key]: false })
-    }
-    document.addEventListener(`keydown`, handleKeyDown)
-    document.addEventListener(`keyup`, handleKeyUp)
-    return () => {
-      document.removeEventListener(`keydown`, handleKeyDown)
-      document.removeEventListener(`keyup`, handleKeyUp)
-    }
-  }, [])
+      setMovement({ [key]: false })
+    },
+    {
+      keyup: true,
+    },
+  )
 }
