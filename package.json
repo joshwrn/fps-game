@@ -27,7 +27,8 @@
     "react-dom": "18.2.0",
     "react-hotkeys": "^2.0.0",
     "three": "^0.150.1",
-    "typescript": "5.0.2"
+    "typescript": "5.0.2",
+    "zustand": "^4.3.6"
   },
   "devDependencies": {
     "@eyecuelab/eslint-config-react": "^1.1.0",
