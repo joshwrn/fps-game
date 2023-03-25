@@ -52,6 +52,7 @@ export const Scene = (): ReactElement => {
       <Canvas shadows gl={{ alpha: false }} camera={{ fov: 80 }}>
         <fog attach="fog" args={[`black`, 0, 50]} />
         <Environment preset="night" />
+        <ambientLight intensity={6} />
         <hemisphereLight
           intensity={1}
           color="rgb(0, 0, 0)"
