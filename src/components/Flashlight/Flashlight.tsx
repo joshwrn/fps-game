@@ -1,16 +1,21 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 
 import { SpotLight } from '@react-three/drei'
 import * as THREE from 'three'
+import type { Group } from 'three'
 
-import { GunModel } from '../Gun/GunModel'
 import { useFlashlightControls, useFlashlightStore } from '@/logic/flashlight'
+import { useUpdateFlashlightPosition } from '@/logic/flashlight/useUpdateFlashlightPostion'
 
 const Flashlight = ({
   ...props
 }: JSX.IntrinsicElements[`group`]): JSX.Element => {
   const [target] = useState(() => new THREE.Object3D())
   const isLightOn = useFlashlightStore((s) => s.isOn)
+  const flashlightRef = useRef<Group>(null)
+  useUpdateFlashlightPosition({
+    flashlightRef,
+  })
   useFlashlightControls()
   return (
     <group {...props}>
@@ -28,8 +33,6 @@ const Flashlight = ({
         position={[0.9, 0.5, 0]}
       />
       <primitive object={target} position={[4, 0, 0]} />
-
-      <GunModel />
     </group>
   )
 }

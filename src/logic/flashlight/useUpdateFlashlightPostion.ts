@@ -3,18 +3,18 @@ import * as THREE from 'three'
 import type { Group } from 'three'
 
 import { isSprinting } from '../movement/useMovementControls'
+import { usePlayerSpeedStore } from '../movement/useUpdatePlayerPosition'
 import { randomNumber } from '@/utils/randomNumber'
 
 const rotation = new THREE.Vector3()
 
 export const useUpdateFlashlightPosition = ({
   flashlightRef,
-  playerSpeed,
 }: {
   flashlightRef: React.RefObject<Group>
-  playerSpeed: THREE.Vector3
 }): void => {
   const { camera } = useThree()
+  const { playerSpeed } = usePlayerSpeedStore((s) => s)
   useFrame((state) => {
     if (flashlightRef?.current?.children[0]) {
       // move flashlight

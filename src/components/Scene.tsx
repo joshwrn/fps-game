@@ -1,16 +1,9 @@
-import type { FC, ReactElement } from 'react'
+import type { ReactElement } from 'react'
 import React, { useState } from 'react'
 
 import styled from '@emotion/styled'
 import { Physics, usePlane, useBox } from '@react-three/cannon'
-import {
-  PointerLockControls,
-  Stars,
-  Float,
-  Sky,
-  Environment,
-  Sparkles,
-} from '@react-three/drei'
+import { PointerLockControls, Float, Environment } from '@react-three/drei'
 import type { MeshProps } from '@react-three/fiber'
 import { Canvas } from '@react-three/fiber'
 import type { Mesh } from 'three'
@@ -50,14 +43,14 @@ export const Scene = (): ReactElement => {
   return (
     <CanvasContainer>
       <Canvas shadows gl={{ alpha: false }} camera={{ fov: 80 }}>
-        <fog attach="fog" args={[`black`, 0, 50]} />
+        {/* <fog attach="fog" args={[`black`, 0, 50]} /> */}
         <Environment preset="night" />
         <ambientLight intensity={6} />
-        <hemisphereLight
-          intensity={1}
-          color="rgb(0, 0, 0)"
-          groundColor="rgb(255, 255, 255)"
-        />
+        {/* <hemisphereLight
+            intensity={1}
+            color="rgb(0, 0, 0)"
+            groundColor="rgb(255, 255, 255)"
+          /> */}
         <Physics gravity={[0, -60, 0]}>
           <Player />
           <Float
@@ -98,5 +91,5 @@ const CanvasContainer = styled.div`
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: black;
+  background-color: #ffffff;
 `

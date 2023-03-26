@@ -4,6 +4,7 @@ import type { PublicApi } from '@react-three/cannon'
 import { useThree, useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import type { Mesh } from 'three'
+import { create } from 'zustand'
 
 import { isSprinting, useMovementStore } from './useMovementControls'
 
@@ -13,17 +14,25 @@ const frontVector = new THREE.Vector3()
 const sideVector = new THREE.Vector3()
 const speed = new THREE.Vector3()
 
+export const usePlayerSpeedStore = create<{
+  playerSpeed: THREE.Vector3
+  setPlayerSpeed: (playerSpeed: THREE.Vector3) => void
+}>((set) => ({
+  playerSpeed: new THREE.Vector3(),
+  setPlayerSpeed: (playerSpeed: THREE.Vector3) => set({ playerSpeed }),
+}))
+
 export const useUpdatePlayerPosition = ({
   playerRef,
   playerApi,
 }: {
   playerRef: React.RefObject<Mesh>
   playerApi: PublicApi
-}): {
-  playerSpeed: THREE.Vector3
-} => {
+}): void => {
   const { forward, backward, left, right, jump } = useMovementStore((s) => s)
   const { camera } = useThree()
+
+  const { setPlayerSpeed } = usePlayerSpeedStore((s) => s)
   const velocity = useRef([0, 0, 0])
   useEffect(
     () => playerApi.velocity.subscribe((v) => (velocity.current = v)),
@@ -47,7 +56,6 @@ export const useUpdatePlayerPosition = ({
     if (jump && Math.abs(velocity.current[1]) <= 0) {
       playerApi.velocity.set(velocity.current[0], 15, velocity.current[2])
     }
+    setPlayerSpeed(speed)
   })
-
-  return { playerSpeed: speed }
 }
