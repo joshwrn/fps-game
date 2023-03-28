@@ -8,6 +8,7 @@ import Flashlight from './Flashlight/Flashlight'
 import { useUpdateFlashlightPosition } from '@/logic/flashlight/useUpdateFlashlightPostion'
 import { useMovementControls } from '@/logic/movement/useMovementControls'
 import { useUpdatePlayerPosition } from '@/logic/movement/useUpdatePlayerPosition'
+import { useWeaponStore } from '@/logic/weapon'
 
 export default function Player(props: SphereProps): JSX.Element {
   const flashlightRef = useRef<Group>(null)

@@ -9,6 +9,8 @@ import { Canvas } from '@react-three/fiber'
 import type { Mesh } from 'three'
 
 import Player from './Player'
+import { Flash } from './Weapon/Flash'
+import { useWeaponStore } from '@/logic/weapon'
 
 function Box(props: MeshProps) {
   const [hovered, setHover] = useState(false)
@@ -16,6 +18,7 @@ function Box(props: MeshProps) {
   const [ref, api] = useBox<Mesh>(() => ({
     mass: 1,
     args: [1, 1, 1],
+    position: [0, 5, -10],
   }))
   return (
     <mesh
@@ -40,27 +43,27 @@ function Box(props: MeshProps) {
 }
 
 export const Scene = (): ReactElement => {
+  const [toggleShoot] = useWeaponStore((s) => [s.toggleShoot])
   return (
     <CanvasContainer>
-      <Canvas shadows gl={{ alpha: false }} camera={{ fov: 80 }}>
-        {/* <fog attach="fog" args={[`black`, 0, 50]} /> */}
+      <Canvas
+        shadows
+        gl={{ alpha: false }}
+        camera={{ fov: 80 }}
+        onMouseDown={() => toggleShoot()}
+        onMouseUp={() => toggleShoot()}
+      >
+        <Flash />
+        <fog attach="fog" args={[`black`, 0, 150]} />
         <Environment preset="night" />
-        <ambientLight intensity={6} />
-        {/* <hemisphereLight
-            intensity={1}
-            color="rgb(0, 0, 0)"
-            groundColor="rgb(255, 255, 255)"
-          /> */}
+        <hemisphereLight
+          intensity={1}
+          color="rgb(25, 24, 61)"
+          groundColor="rgb(0, 0, 0)"
+        />
         <Physics gravity={[0, -60, 0]}>
           <Player />
-          <Float
-            speed={4}
-            rotationIntensity={3}
-            floatIntensity={1}
-            floatingRange={[1, 2]}
-          >
-            <Box position={[5, 10, 0]} />
-          </Float>
+          <Box position={[5, 10, 0]} />
           <Ground />
         </Physics>
         <PointerLockControls />
@@ -76,7 +79,7 @@ export const Ground = (): React.ReactElement => {
       <planeGeometry args={[1000, 1000]} />
       <meshStandardMaterial
         color="rgb(86, 187, 64)"
-        metalness={1}
+        metalness={0}
         roughness={0.5}
         attach="material"
         envMapIntensity={0.2}

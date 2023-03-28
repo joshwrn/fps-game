@@ -38,9 +38,7 @@ const Material = () => (
 )
 
 export function WeaponModel(props: JSX.IntrinsicElements[`group`]): JSX.Element {
-  const { nodes, materials } = useGLTF(
-    `/models/weapon-model/scene.gltf`,
-  ) as GLTFResult
+  const { nodes } = useGLTF(`/models/weapon-model/scene.gltf`) as GLTFResult
   return (
     <group {...props} dispose={null}>
       <group position={[-0.41, 0.07, 0]} rotation={[0, 0, 0.02]} scale={0.02}>

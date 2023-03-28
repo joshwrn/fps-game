@@ -7,6 +7,17 @@ import { Canvas } from '@react-three/fiber'
 
 import { WeaponModel } from './WeaponModel'
 import { useFlashlightStore } from '@/logic/flashlight'
+import { useWeapon } from '@/logic/weapon'
+
+const Weapon = () => {
+  useWeapon()
+  return (
+    <WeaponModel
+      position={[1, -1.8, -1.5]}
+      rotation={[0.05, Math.PI / 2 + 0.1, 0]}
+    />
+  )
+}
 
 export const WeaponScene: FC = () => {
   const { flashlightIsOn } = useFlashlightStore((s) => ({
@@ -17,10 +28,7 @@ export const WeaponScene: FC = () => {
       <Canvas camera={{ fov: 35 }}>
         <pointLight position={[2, 2, 1]} intensity={flashlightIsOn ? 10 : 0} />
         <Environment preset="night" />
-        <WeaponModel
-          position={[1, -1.8, -1.5]}
-          rotation={[0.05, Math.PI / 2 + 0.1, 0]}
-        />
+        <Weapon />
       </Canvas>
     </CanvasContainerGun>
   )

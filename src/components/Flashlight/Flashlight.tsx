@@ -17,6 +17,7 @@ const Flashlight = ({
     flashlightRef,
   })
   useFlashlightControls()
+
   return (
     <group {...props}>
       <SpotLight
@@ -25,7 +26,7 @@ const Flashlight = ({
         penumbra={0.25}
         radiusTop={0.1}
         radiusBottom={50}
-        distance={80}
+        distance={150}
         angle={0.6}
         attenuation={isLightOn ? 20 : 0}
         anglePower={5}
