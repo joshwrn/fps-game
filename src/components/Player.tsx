@@ -40,8 +40,8 @@ export default function Player(props: SphereProps): JSX.Element {
           position={[2, -1.8, -1.5]}
           rotation={[0, Math.PI / 2 + 0.1, 0]}
         />
-        <Flash />
         <Weapon />
+        <Flash />
       </group>
     </>
   )

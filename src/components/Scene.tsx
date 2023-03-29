@@ -4,9 +4,15 @@ import React, { useState } from 'react'
 import styled from '@emotion/styled'
 import { Globals } from '@react-spring/three'
 import { Physics, usePlane, useBox } from '@react-three/cannon'
-import { PointerLockControls, Float, Environment } from '@react-three/drei'
+import {
+  PointerLockControls,
+  Float,
+  Environment,
+  Effects,
+} from '@react-three/drei'
 import type { MeshProps } from '@react-three/fiber'
 import { Canvas } from '@react-three/fiber'
+import { Bloom, EffectComposer, DepthOfField } from '@react-three/postprocessing'
 import type { Mesh } from 'three'
 
 import Player from './Player'
@@ -54,13 +60,9 @@ export const Scene = (): ReactElement => {
         onMouseDown={() => toggleShoot()}
         onMouseUp={() => toggleShoot()}
       >
-        <fog attach="fog" args={[`black`, 0, 150]} />
+        {/* <fog attach="fog" args={[`black`, 0, 150]} /> */}
         <Environment preset="night" />
-        <hemisphereLight
-          intensity={1}
-          color="rgb(25, 24, 61)"
-          groundColor="rgb(0, 0, 0)"
-        />
+        <ambientLight intensity={0.5} />
         <Physics gravity={[0, -60, 0]}>
           <Player />
           <Box position={[5, 10, 0]} />
@@ -76,9 +78,9 @@ export const Ground = (): React.ReactElement => {
   const [ref] = usePlane<Mesh>(() => ({ rotation: [-Math.PI / 2, 0, 0] }))
   return (
     <mesh ref={ref} receiveShadow>
-      <planeGeometry args={[1000, 1000]} />
+      <planeGeometry args={[100, 100]} />
       <meshStandardMaterial
-        color="rgb(86, 187, 64)"
+        color="rgb(69, 69, 69)"
         metalness={0}
         roughness={0.5}
         attach="material"

@@ -1,8 +1,9 @@
 import type { FC } from 'react'
-import React from 'react'
+import React, { useState } from 'react'
 
 import { Globals } from '@react-spring/shared'
 import { useSpring, animated } from '@react-spring/three'
+import * as THREE from 'three'
 
 import { useWeaponStore } from '@/state/weapon'
 
@@ -12,11 +13,12 @@ Globals.assign({
 
 export const Flash: FC = () => {
   const { isShooting, firingBullet } = useWeaponStore((s) => s)
+  const [target] = useState(() => new THREE.Object3D())
 
   const { intensity } = useSpring({
-    intensity: firingBullet ? 0.5 : 0,
+    intensity: firingBullet ? 5 : 0,
     config: {
-      duration: 0,
+      duration: 1,
     },
   })
 
@@ -33,6 +35,18 @@ export const Flash: FC = () => {
         />
       </mesh> */}
       {/* @ts-ignore */}
+      <animated.spotLight
+        position={[0.3, 0, 0]}
+        rotation={[0, Math.PI / 2 + 0.1, 0]}
+        intensity={intensity}
+        color="#ffad42"
+        castShadow
+        target={target}
+        penumbra={0.5}
+        distance={150}
+        angle={0.8}
+      />
+      <primitive object={target} position={[0, -1, -3]} />
       <animated.pointLight
         position={[0, 0, -5]}
         intensity={intensity}

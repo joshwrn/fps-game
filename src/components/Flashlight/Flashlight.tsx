@@ -1,39 +1,54 @@
 import React, { useRef, useState } from 'react'
 
+import { useSpring, animated } from '@react-spring/three'
 import { SpotLight } from '@react-three/drei'
 import * as THREE from 'three'
 import type { Group } from 'three'
 
 import { useFlashlightControls, useFlashlightStore } from '@/state/flashlight'
 import { useUpdateFlashlightPosition } from '@/state/flashlight/useUpdateFlashlightPostion'
+import { useWeaponStore } from '@/state/weapon'
+import { randomNumber } from '@/utils/randomNumber'
 
 const Flashlight = ({
   ...props
 }: JSX.IntrinsicElements[`group`]): JSX.Element => {
   const [target] = useState(() => new THREE.Object3D())
   const isLightOn = useFlashlightStore((s) => s.isOn)
-  const flashlightRef = useRef<Group>(null)
-  useUpdateFlashlightPosition({
-    flashlightRef,
+  const { firingBullet } = useWeaponStore((s) => ({
+    firingBullet: s.firingBullet,
+  }))
+  const { rotation, position } = useSpring({
+    rotation: [firingBullet ? 0.5 : 0, firingBullet ? -0.2 : 0, 0],
+    position: [
+      firingBullet ? randomNumber(0.1, 1) : 0,
+      firingBullet ? randomNumber(0.1, 1) : 0,
+      firingBullet ? randomNumber(0.1, 0.5) : 0,
+    ],
+    config: { tension: 600, friction: 100, mass: 1 },
   })
+
   useFlashlightControls()
 
   return (
     <group {...props}>
-      <SpotLight
-        castShadow
-        target={target}
-        penumbra={0.25}
-        radiusTop={0.1}
-        radiusBottom={50}
-        distance={150}
-        angle={0.6}
-        attenuation={isLightOn ? 20 : 0}
-        anglePower={5}
-        intensity={isLightOn ? 2 : 0}
-        position={[0.9, 0.5, 0]}
-      />
-      <primitive object={target} position={[4, 0, 0]} />
+      {/* @ts-expect-error */}
+      <animated.group rotation={rotation} position={position}>
+        <SpotLight
+          castShadow
+          target={target}
+          penumbra={0.25}
+          radiusTop={0.1}
+          radiusBottom={50}
+          distance={150}
+          angle={0.6}
+          attenuation={isLightOn ? 20 : 0}
+          anglePower={5}
+          intensity={isLightOn ? 2 : 0}
+          position={[0.9, 0.5, 0]}
+        />
+        <primitive object={target} position={[4, 0, 0]} />
+      </animated.group>
     </group>
   )
 }
