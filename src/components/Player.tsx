@@ -5,10 +5,13 @@ import { useSphere } from '@react-three/cannon'
 import type { Group, Mesh } from 'three'
 
 import Flashlight from './Flashlight/Flashlight'
-import { useUpdateFlashlightPosition } from '@/logic/flashlight/useUpdateFlashlightPostion'
-import { useMovementControls } from '@/logic/movement/useMovementControls'
-import { useUpdatePlayerPosition } from '@/logic/movement/useUpdatePlayerPosition'
-import { useWeaponStore } from '@/logic/weapon'
+import { Flash } from './Weapon/Flash'
+import { WeaponModel } from './Weapon/WeaponModel'
+import { Weapon } from './Weapon/WeaponScene'
+import { useUpdateFlashlightPosition } from '@/state/flashlight/useUpdateFlashlightPostion'
+import { useMovementControls } from '@/state/movement/useMovementControls'
+import { useUpdatePlayerPosition } from '@/state/movement/useUpdatePlayerPosition'
+import { useWeaponStore } from '@/state/weapon'
 
 export default function Player(props: SphereProps): JSX.Element {
   const flashlightRef = useRef<Group>(null)
@@ -37,6 +40,8 @@ export default function Player(props: SphereProps): JSX.Element {
           position={[2, -1.8, -1.5]}
           rotation={[0, Math.PI / 2 + 0.1, 0]}
         />
+        <Flash />
+        <Weapon />
       </group>
     </>
   )

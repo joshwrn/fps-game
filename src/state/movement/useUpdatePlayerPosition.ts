@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 
+import { Globals } from '@react-spring/three'
 import type { PublicApi } from '@react-three/cannon'
 import { useThree, useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
@@ -13,6 +14,10 @@ const direction = new THREE.Vector3()
 const frontVector = new THREE.Vector3()
 const sideVector = new THREE.Vector3()
 const speed = new THREE.Vector3()
+
+Globals.assign({
+  frameLoop: `always`,
+})
 
 export const usePlayerSpeedStore = create<{
   playerSpeed: THREE.Vector3

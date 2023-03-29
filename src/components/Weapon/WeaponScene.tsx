@@ -6,10 +6,10 @@ import { Environment } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
 
 import { WeaponModel } from './WeaponModel'
-import { useFlashlightStore } from '@/logic/flashlight'
-import { useWeapon } from '@/logic/weapon'
+import { useFlashlightStore } from '@/state/flashlight'
+import { useWeapon } from '@/state/weapon'
 
-const Weapon = () => {
+export const Weapon: FC = () => {
   useWeapon()
   return (
     <WeaponModel

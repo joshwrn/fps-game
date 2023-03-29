@@ -2,6 +2,7 @@ import type { ReactElement } from 'react'
 import React, { useState } from 'react'
 
 import styled from '@emotion/styled'
+import { Globals } from '@react-spring/three'
 import { Physics, usePlane, useBox } from '@react-three/cannon'
 import { PointerLockControls, Float, Environment } from '@react-three/drei'
 import type { MeshProps } from '@react-three/fiber'
@@ -10,7 +11,7 @@ import type { Mesh } from 'three'
 
 import Player from './Player'
 import { Flash } from './Weapon/Flash'
-import { useWeaponStore } from '@/logic/weapon'
+import { useWeaponStore } from '@/state/weapon'
 
 function Box(props: MeshProps) {
   const [hovered, setHover] = useState(false)
@@ -53,7 +54,6 @@ export const Scene = (): ReactElement => {
         onMouseDown={() => toggleShoot()}
         onMouseUp={() => toggleShoot()}
       >
-        <Flash />
         <fog attach="fog" args={[`black`, 0, 150]} />
         <Environment preset="night" />
         <hemisphereLight

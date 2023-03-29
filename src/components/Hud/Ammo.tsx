@@ -3,7 +3,7 @@ import React from 'react'
 
 import styled from '@emotion/styled'
 
-import { useWeaponStore } from '@/logic/weapon'
+import { useWeaponStore } from '@/state/weapon'
 
 export const Ammo: FC = () => {
   const ammo = useWeaponStore((s) => s.ammo)

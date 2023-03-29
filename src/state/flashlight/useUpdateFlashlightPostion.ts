@@ -1,3 +1,4 @@
+import { Globals } from '@react-spring/three'
 import { useThree, useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import type { Group } from 'three'
@@ -7,6 +8,10 @@ import { usePlayerSpeedStore } from '../movement/useUpdatePlayerPosition'
 import { randomNumber } from '@/utils/randomNumber'
 
 const rotation = new THREE.Vector3()
+
+Globals.assign({
+  frameLoop: `always`,
+})
 
 export const useUpdateFlashlightPosition = ({
   flashlightRef,

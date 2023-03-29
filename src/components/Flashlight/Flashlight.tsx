@@ -4,8 +4,8 @@ import { SpotLight } from '@react-three/drei'
 import * as THREE from 'three'
 import type { Group } from 'three'
 
-import { useFlashlightControls, useFlashlightStore } from '@/logic/flashlight'
-import { useUpdateFlashlightPosition } from '@/logic/flashlight/useUpdateFlashlightPostion'
+import { useFlashlightControls, useFlashlightStore } from '@/state/flashlight'
+import { useUpdateFlashlightPosition } from '@/state/flashlight/useUpdateFlashlightPostion'
 
 const Flashlight = ({
   ...props
