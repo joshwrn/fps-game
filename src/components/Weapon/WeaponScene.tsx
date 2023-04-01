@@ -13,15 +13,15 @@ import { randomNumber } from '@/utils/randomNumber'
 
 export const Weapon: FC = () => {
   useWeapon()
-  const { firingBullet } = useWeaponStore((s) => ({
-    firingBullet: s.firingBullet,
+  const { isFiringBullet } = useWeaponStore((s) => ({
+    isFiringBullet: s.isFiringBullet,
   }))
   const { rotation, position } = useSpring({
-    rotation: [firingBullet ? 0.5 : 0, firingBullet ? -0.2 : 0, 0],
+    rotation: [isFiringBullet ? 0.5 : 0, isFiringBullet ? -0.2 : 0, 0],
     position: [
-      firingBullet ? randomNumber(0.1, 1) : 0,
-      firingBullet ? randomNumber(0.1, 1) : 0,
-      firingBullet ? randomNumber(0.1, 0.5) : 0,
+      isFiringBullet ? randomNumber(0.1, 1) : 0,
+      isFiringBullet ? randomNumber(0.1, 1) : 0,
+      isFiringBullet ? randomNumber(0.1, 0.5) : 0,
     ],
     config: { tension: 600, friction: 100, mass: 1 },
   })

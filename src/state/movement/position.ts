@@ -7,7 +7,7 @@ import * as THREE from 'three'
 import type { Mesh } from 'three'
 import { create } from 'zustand'
 
-import { isSprinting, useMovementStore } from './useMovementControls'
+import { isSprinting, useMovementStore } from './controls'
 
 const SPEED = 20
 const direction = new THREE.Vector3()

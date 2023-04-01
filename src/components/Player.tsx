@@ -6,12 +6,10 @@ import type { Group, Mesh } from 'three'
 
 import Flashlight from './Flashlight/Flashlight'
 import { Flash } from './Weapon/Flash'
-import { WeaponModel } from './Weapon/WeaponModel'
 import { Weapon } from './Weapon/WeaponScene'
-import { useUpdateFlashlightPosition } from '@/state/flashlight/useUpdateFlashlightPostion'
-import { useMovementControls } from '@/state/movement/useMovementControls'
-import { useUpdatePlayerPosition } from '@/state/movement/useUpdatePlayerPosition'
-import { useWeaponStore } from '@/state/weapon'
+import { useUpdateFlashlightPosition } from '@/state/flashlight/position'
+import { useMovementControls } from '@/state/movement/controls'
+import { useUpdatePlayerPosition } from '@/state/movement/position'
 
 export default function Player(props: SphereProps): JSX.Element {
   const flashlightRef = useRef<Group>(null)

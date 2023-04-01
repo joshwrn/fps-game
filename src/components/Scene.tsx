@@ -2,21 +2,13 @@ import type { ReactElement } from 'react'
 import React, { useState } from 'react'
 
 import styled from '@emotion/styled'
-import { Globals } from '@react-spring/three'
 import { Physics, usePlane, useBox } from '@react-three/cannon'
-import {
-  PointerLockControls,
-  Float,
-  Environment,
-  Effects,
-} from '@react-three/drei'
+import { PointerLockControls, Environment } from '@react-three/drei'
 import type { MeshProps } from '@react-three/fiber'
 import { Canvas } from '@react-three/fiber'
-import { Bloom, EffectComposer, DepthOfField } from '@react-three/postprocessing'
 import type { Mesh } from 'three'
 
 import Player from './Player'
-import { Flash } from './Weapon/Flash'
 import { useWeaponStore } from '@/state/weapon'
 
 function Box(props: MeshProps) {
@@ -50,15 +42,15 @@ function Box(props: MeshProps) {
 }
 
 export const Scene = (): ReactElement => {
-  const [toggleShoot] = useWeaponStore((s) => [s.toggleShoot])
+  const [setIsShooting] = useWeaponStore((s) => [s.setIsShooting])
   return (
     <CanvasContainer>
       <Canvas
         shadows
         gl={{ alpha: false }}
         camera={{ fov: 80 }}
-        onMouseDown={() => toggleShoot()}
-        onMouseUp={() => toggleShoot()}
+        onMouseDown={() => setIsShooting(true)}
+        onMouseUp={() => setIsShooting(false)}
       >
         {/* <fog attach="fog" args={[`black`, 0, 150]} /> */}
         <Environment preset="night" />

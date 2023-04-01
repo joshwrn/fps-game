@@ -12,11 +12,12 @@ Globals.assign({
 })
 
 export const Flash: FC = () => {
-  const { isShooting, firingBullet } = useWeaponStore((s) => s)
+  const { isShooting, isFiringBullet } = useWeaponStore((s) => s)
   const [target] = useState(() => new THREE.Object3D())
 
-  const { intensity } = useSpring({
-    intensity: firingBullet ? 5 : 0,
+  const { intensity, sIntensity } = useSpring({
+    intensity: isFiringBullet ? 5 : 0,
+    sIntensity: isFiringBullet ? 30 : 0,
     config: {
       duration: 1,
     },
@@ -38,15 +39,16 @@ export const Flash: FC = () => {
       <animated.spotLight
         position={[0.3, 0, 0]}
         rotation={[0, Math.PI / 2 + 0.1, 0]}
-        intensity={intensity}
-        color="#ffad42"
+        intensity={sIntensity}
+        color="#ff5542"
         castShadow
         target={target}
         penumbra={0.5}
-        distance={150}
+        distance={250}
         angle={0.8}
       />
       <primitive object={target} position={[0, -1, -3]} />
+      {/* @ts-ignore */}
       <animated.pointLight
         position={[0, 0, -5]}
         intensity={intensity}

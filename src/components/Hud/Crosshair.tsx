@@ -8,19 +8,19 @@ import { useWeaponStore } from '@/state/weapon'
 import { randomNumber } from '@/utils/randomNumber'
 
 export const Crosshair: FC = () => {
-  const { firingBullet, isShooting } = useWeaponStore((s) => ({
-    firingBullet: s.firingBullet,
+  const { isFiringBullet, isShooting } = useWeaponStore((s) => ({
+    isFiringBullet: s.isFiringBullet,
     isShooting: s.isShooting,
   }))
   const styles = useSpring({
     from: { x: 0, y: 0 },
     to: {
-      x: firingBullet ? randomNumber(-50, 50) : 0,
+      x: isFiringBullet ? randomNumber(-50, 50) : 0,
       y: isShooting ? -50 : 0,
     },
     config: { tension: isShooting ? 900 : 1500, friction: 300, mass: 1 },
   })
-  return <Dot style={styles} />
+  return <Dot />
 }
 
 const Dot = styled(animated.div)`

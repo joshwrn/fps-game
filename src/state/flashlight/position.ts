@@ -3,8 +3,8 @@ import { useThree, useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import type { Group } from 'three'
 
-import { isSprinting } from '../movement/useMovementControls'
-import { usePlayerSpeedStore } from '../movement/useUpdatePlayerPosition'
+import { isSprinting } from '../movement/controls'
+import { usePlayerSpeedStore } from '../movement/position'
 import { randomNumber } from '@/utils/randomNumber'
 
 const rotation = new THREE.Vector3()
