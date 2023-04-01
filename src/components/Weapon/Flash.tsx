@@ -12,7 +12,9 @@ Globals.assign({
 })
 
 export const Flash: FC = () => {
-  const { isShooting, isFiringBullet } = useWeaponStore((s) => s)
+  const { isFiringBullet } = useWeaponStore((s) => ({
+    isFiringBullet: s.isFiringBullet,
+  }))
   const [target] = useState(() => new THREE.Object3D())
 
   const { intensity, sIntensity } = useSpring({

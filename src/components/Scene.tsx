@@ -1,45 +1,15 @@
 import type { ReactElement } from 'react'
-import React, { useState } from 'react'
+import React from 'react'
 
 import styled from '@emotion/styled'
-import { Physics, usePlane, useBox } from '@react-three/cannon'
+import { Physics, usePlane } from '@react-three/cannon'
 import { PointerLockControls, Environment } from '@react-three/drei'
-import type { MeshProps } from '@react-three/fiber'
 import { Canvas } from '@react-three/fiber'
 import type { Mesh } from 'three'
 
+import { Box } from './Box'
 import Player from './Player'
 import { useWeaponStore } from '@/state/weapon'
-
-function Box(props: MeshProps) {
-  const [hovered, setHover] = useState(false)
-  const [active, setActive] = useState(false)
-  const [ref, api] = useBox<Mesh>(() => ({
-    mass: 1,
-    args: [1, 1, 1],
-    position: [0, 5, -10],
-  }))
-  return (
-    <mesh
-      {...props}
-      ref={ref}
-      castShadow
-      scale={[1, 1, 1]}
-      onClick={() => setActive(!active)}
-      onPointerOver={() => setHover(true)}
-      onPointerOut={(event) => setHover(false)}
-    >
-      <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial
-        color={hovered ? `hotpink` : `orange`}
-        metalness={1}
-        roughness={0.5}
-        attach="material"
-        envMapIntensity={0.2}
-      />
-    </mesh>
-  )
-}
 
 export const Scene = (): ReactElement => {
   const [setIsShooting] = useWeaponStore((s) => [s.setIsShooting])

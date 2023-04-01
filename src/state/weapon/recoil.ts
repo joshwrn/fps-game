@@ -28,14 +28,14 @@ export const useRecoil = (): void => {
     if (isShooting) {
       // horizontal recoil
       const quat = new THREE.Quaternion()
-      const recoilAngle = getRecoilPattern(bulletsFired, `x`)
+      const recoilAngle = getRecoilPattern(bulletsFired, `x`) * 0.1
       quat.setFromAxisAngle(new THREE.Vector3(0, 1, 0), recoilAngle)
       camera.quaternion.multiplyQuaternions(quat, camera.quaternion)
     }
 
     if (isShooting) {
       // vertical recoil
-      const recoilAngle = getRecoilPattern(bulletsFired, `y`)
+      const recoilAngle = getRecoilPattern(bulletsFired, `y`) * 0.1
       const recoilAxis = new THREE.Vector3(1, 0, 0)
       const recoilQuaternion = new THREE.Quaternion().setFromAxisAngle(
         recoilAxis,

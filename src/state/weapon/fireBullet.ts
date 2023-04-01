@@ -23,13 +23,11 @@ export const useFireBullet = (): void => {
   useFrame(() => {
     const readyToShoot = lastShot + 0.1 < clock.getElapsedTime()
 
-    if (isShooting && ammo > 0) {
-      if (readyToShoot) {
-        setLastShot(clock.getElapsedTime())
-        shootBullet()
-        setIsFiringBullet(true)
-        setBulletsFired((prev) => prev + 1)
-      }
+    if (isShooting && ammo > 0 && readyToShoot) {
+      setLastShot(clock.getElapsedTime())
+      shootBullet()
+      setIsFiringBullet(true)
+      setBulletsFired((prev) => prev + 1)
     }
 
     if (!isShooting || !readyToShoot) {
