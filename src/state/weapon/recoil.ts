@@ -1,35 +1,97 @@
 import { useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
+import { create } from 'zustand'
 
 import { useWeaponStore } from '.'
 import { randomNumber } from '@/utils/randomNumber'
 
-const getMultiplier = (randomMultiplier: number): number => {
-  if (randomMultiplier > 30) return 8
-  if (randomMultiplier > 25) return 7
-  if (randomMultiplier > 20) return 6
-  if (randomMultiplier > 15) return 5
-  if (randomMultiplier > 10) return 4
-  if (randomMultiplier > 5) return 3
-  return 2
-}
+export const useRecoilStore = create<{
+  bulletsFired: number
+  setBulletsFired: (fn: (prev: number) => number) => void
+}>((set) => ({
+  bulletsFired: 0,
+  setBulletsFired: (fn: (prev: number) => number) =>
+    set((prev) => ({ bulletsFired: fn(prev.bulletsFired) })),
+}))
 
 export const useRecoil = (): void => {
-  const { isShooting } = useWeaponStore()
+  const { isShooting } = useWeaponStore((s) => ({
+    isShooting: s.isShooting,
+  }))
+  const { bulletsFired, setBulletsFired } = useRecoilStore((s) => ({
+    bulletsFired: s.bulletsFired,
+    setBulletsFired: s.setBulletsFired,
+  }))
   const { camera } = useThree()
 
   useFrame(() => {
-    // vertical recoil
-    const randomMultiplier = randomNumber(1, 30)
-    const randomRecoil = randomNumber(1, getMultiplier(randomMultiplier))
     if (isShooting) {
-      const recoilAngle = THREE.MathUtils.degToRad(0.5 * randomRecoil) // convert angle to radians
-      const recoilAxis = new THREE.Vector3(1, 0, 0) // define rotation axis as y-axis
+      // horizontal recoil
+      const quat = new THREE.Quaternion()
+      const recoilAngle = getRecoilPattern(bulletsFired, `x`)
+      quat.setFromAxisAngle(new THREE.Vector3(0, 1, 0), recoilAngle)
+      camera.quaternion.multiplyQuaternions(quat, camera.quaternion)
+    }
+
+    if (isShooting) {
+      // vertical recoil
+      const recoilAngle = getRecoilPattern(bulletsFired, `y`)
+      const recoilAxis = new THREE.Vector3(1, 0, 0)
       const recoilQuaternion = new THREE.Quaternion().setFromAxisAngle(
         recoilAxis,
         recoilAngle,
-      ) // create quaternion
-      camera.quaternion.multiply(recoilQuaternion) // apply recoil quaternion to camera
+      )
+      camera.quaternion.multiply(recoilQuaternion)
+    }
+    if (!isShooting) {
+      setBulletsFired(() => 0)
     }
   })
 }
+
+const getRecoilPattern = (bulletsFired: number, axis: `x` | `y`): number => {
+  if (bulletsFired >= recoilPattern.length) {
+    return 0
+  }
+  const randomMultiplier = {
+    x: randomNumber(0.1, 0.2),
+    y: randomNumber(0.4, 0.6),
+  }
+  const amount = recoilPattern[bulletsFired][axis]
+  const recoilAngle = THREE.MathUtils.degToRad(randomMultiplier[axis] * amount)
+  return recoilAngle
+}
+
+// recoil pattern for 30 bullets
+const recoilPattern = [
+  { x: 0, y: 1 },
+  { x: 0, y: 2 },
+  { x: 0, y: 3 },
+  { x: -1, y: 4 },
+  { x: 0, y: 2 },
+  { x: 1, y: 1 },
+  { x: 0, y: 1 },
+  { x: 1, y: 3 },
+  { x: 0, y: 4 },
+  { x: 0, y: 2 },
+  { x: 1, y: 1 },
+  { x: 0, y: 1 },
+  { x: 0, y: 3 },
+  { x: 0, y: 4 },
+  { x: 1, y: 2 },
+  { x: -1, y: 1 },
+  { x: 0, y: 1 },
+  { x: 1, y: 3 },
+  { x: 2, y: 4 },
+  { x: 1, y: 2 },
+  { x: 1, y: 1 },
+  { x: 0, y: 1 },
+  { x: -1, y: 3 },
+  { x: -2, y: 4 },
+  { x: -2, y: 2 },
+  { x: -1, y: 1 },
+  { x: 0, y: 1 },
+  { x: 1, y: 3 },
+  { x: 2, y: 4 },
+  { x: 2, y: 2 },
+]
