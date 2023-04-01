@@ -3,7 +3,7 @@ import { create } from 'zustand'
 
 import { useFireBullet } from './fireBullet'
 import { useRecoil } from './recoil'
-import { useReload } from './reload'
+import { useReloadControls } from './reload'
 
 Globals.assign({
   frameLoop: `always`,
@@ -43,5 +43,5 @@ export const useWeaponStore = create<{
 export const useWeapon = (): void => {
   useFireBullet()
   useRecoil()
-  useReload()
+  useReloadControls()
 }

@@ -18,7 +18,7 @@ export const useRecoil = (): void => {
   const { isShooting } = useWeaponStore((s) => ({
     isShooting: s.isShooting,
   }))
-  const { bulletsFired, setBulletsFired } = useRecoilStore((s) => ({
+  const { bulletsFired } = useRecoilStore((s) => ({
     bulletsFired: s.bulletsFired,
     setBulletsFired: s.setBulletsFired,
   }))
@@ -43,9 +43,6 @@ export const useRecoil = (): void => {
       )
       camera.quaternion.multiply(recoilQuaternion)
     }
-    if (!isShooting) {
-      setBulletsFired(() => 0)
-    }
   })
 }
 
@@ -54,8 +51,8 @@ const getRecoilPattern = (bulletsFired: number, axis: `x` | `y`): number => {
     return 0
   }
   const randomMultiplier = {
-    x: randomNumber(0.1, 0.2),
-    y: randomNumber(0.4, 0.6),
+    x: randomNumber(0.15, 0.2),
+    y: randomNumber(0.45, 0.55),
   }
   const amount = recoilPattern[bulletsFired][axis]
   const recoilAngle = THREE.MathUtils.degToRad(randomMultiplier[axis] * amount)
@@ -67,31 +64,31 @@ const recoilPattern = [
   { x: 0, y: 1 },
   { x: 0, y: 2 },
   { x: 0, y: 3 },
-  { x: -1, y: 4 },
-  { x: 0, y: 2 },
-  { x: 1, y: 1 },
-  { x: 0, y: 1 },
-  { x: 1, y: 3 },
   { x: 0, y: 4 },
   { x: 0, y: 2 },
-  { x: 1, y: 1 },
-  { x: 0, y: 1 },
-  { x: 0, y: 3 },
-  { x: 0, y: 4 },
-  { x: 1, y: 2 },
   { x: -1, y: 1 },
+  { x: -1, y: 1 },
+  { x: -1, y: 3 },
+  { x: -1, y: 4 },
+  { x: -1, y: 2 },
   { x: 0, y: 1 },
-  { x: 1, y: 3 },
-  { x: 2, y: 4 },
-  { x: 1, y: 2 },
-  { x: 1, y: 1 },
   { x: 0, y: 1 },
   { x: -1, y: 3 },
-  { x: -2, y: 4 },
-  { x: -2, y: 2 },
+  { x: -1, y: 4 },
+  { x: -1, y: 2 },
+  { x: 0, y: 1 },
+  { x: 0, y: 1 },
+  { x: -1, y: 3 },
+  { x: -1, y: 4 },
+  { x: -1, y: 2 },
   { x: -1, y: 1 },
   { x: 0, y: 1 },
   { x: 1, y: 3 },
-  { x: 2, y: 4 },
-  { x: 2, y: 2 },
+  { x: 1, y: 4 },
+  { x: 1, y: 2 },
+  { x: 1, y: 1 },
+  { x: 1, y: 1 },
+  { x: 1, y: 3 },
+  { x: 1, y: 4 },
+  { x: 1, y: 2 },
 ]

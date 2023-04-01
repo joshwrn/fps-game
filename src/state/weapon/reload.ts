@@ -4,7 +4,7 @@ import { useWeaponStore } from '.'
 
 export const RELOAD_TIME = 500
 
-export const useReload = (): void => {
+export const useReload = (): { reload: VoidFunction } => {
   const { reload, setIsReloading } = useWeaponStore()
   const handleReload = () => {
     // interval to simulate reloading
@@ -15,5 +15,10 @@ export const useReload = (): void => {
       setIsReloading(false)
     }, RELOAD_TIME)
   }
-  useHotkeys(`r`, handleReload)
+  return { reload: handleReload }
+}
+
+export const useReloadControls = (): void => {
+  const { reload } = useReload()
+  useHotkeys(`r`, reload)
 }

@@ -4,6 +4,7 @@ import { useFrame, useThree } from '@react-three/fiber'
 
 import { useWeaponStore } from '.'
 import { useRecoilStore } from './recoil'
+import { useReload } from './reload'
 
 export const useFireBullet = (): void => {
   const {
@@ -14,7 +15,8 @@ export const useFireBullet = (): void => {
     setIsShooting,
     isReloading,
   } = useWeaponStore()
-  const { bulletsFired, setBulletsFired } = useRecoilStore()
+  const { setBulletsFired } = useRecoilStore()
+  const { reload } = useReload()
   const [lastShot, setLastShot] = useState(0)
   const clock = useThree((state) => state.clock)
 
@@ -34,9 +36,17 @@ export const useFireBullet = (): void => {
       setIsFiringBullet(false)
     }
 
+    if (!isShooting) {
+      setBulletsFired(() => 0)
+    }
+
     if (ammo === 0 || isReloading) {
       setIsShooting(false)
       setIsFiringBullet(false)
+    }
+
+    if (ammo === 0) {
+      reload()
     }
   })
 }
