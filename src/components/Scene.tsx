@@ -13,6 +13,7 @@ import { useWeaponStore } from '@/state/weapon'
 
 export const Scene = (): ReactElement => {
   const [setIsShooting] = useWeaponStore((s) => [s.setIsShooting])
+
   return (
     <CanvasContainer>
       <Canvas
@@ -43,7 +44,7 @@ export const Ground = (): React.ReactElement => {
       <planeGeometry args={[100, 100]} />
       <meshStandardMaterial
         color="rgb(69, 69, 69)"
-        metalness={0}
+        metalness={0.3}
         roughness={0.5}
         attach="material"
         envMapIntensity={0.2}

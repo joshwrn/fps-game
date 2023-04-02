@@ -2,7 +2,7 @@ import type { FC } from 'react'
 import { useEffect, useState } from 'react'
 
 import { useBox } from '@react-three/cannon'
-import type { MeshProps, ThreeEvent, Vector3 } from '@react-three/fiber'
+import type { MeshProps } from '@react-three/fiber'
 import { useThree, useFrame } from '@react-three/fiber'
 import type { Mesh } from 'three'
 import * as THREE from 'three'
@@ -34,7 +34,7 @@ export const Box: FC<MeshProps> = (props) => {
           ray.direction.z * 10,
         )
         api.velocity.set(v.x, v.y, v.z)
-        setHealth((s) => s - 5)
+        setHealth((s) => s - 7)
       }
     }
   })
@@ -58,11 +58,11 @@ export const Box: FC<MeshProps> = (props) => {
     >
       <boxGeometry args={[1, 1, 1]} />
       <meshStandardMaterial
-        color={health > 0 ? (hovered ? `hotpink` : `orange`) : `red`}
-        metalness={1}
-        roughness={0.5}
+        color={`rgb(255, ${health * 2}, ${health})`}
+        metalness={0.3}
+        roughness={0.7}
         attach="material"
-        envMapIntensity={0.2}
+        envMapIntensity={1}
       />
     </mesh>
   )

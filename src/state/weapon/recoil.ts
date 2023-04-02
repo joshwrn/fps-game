@@ -78,35 +78,6 @@ export const useRecoil = (): void => {
       )
       camera.quaternion.multiply(recoilQuaternion)
     }
-
-    const s = playerSpeed.length() < 1 ? 1 : playerSpeed.length()
-    const speed = Math.round(s)
-    const sp4 = Math.round(speed / 4)
-    console.log(speed / 4)
-
-    // maybe use position instead of rotation
-    if (!isShooting) {
-      // head bob vertical
-      const amplitude = 0.00025 * (speed / 4)
-      const recoilAngle = Math.cos(clock.getElapsedTime() * sp4) * amplitude
-      const recoilAxis = new THREE.Vector3(1, 0, 0)
-      const recoilQuaternion = new THREE.Quaternion().setFromAxisAngle(
-        recoilAxis,
-        recoilAngle,
-      )
-      camera.quaternion.multiply(recoilQuaternion)
-    }
-    if (!isShooting) {
-      // head bob horizontal
-      const amplitude = 0.00025 * (speed / 4)
-      const recoilAngle = Math.sin(clock.getElapsedTime()) * amplitude
-      const recoilAxis = new THREE.Vector3(0, 1, 0)
-      const recoilQuaternion = new THREE.Quaternion().setFromAxisAngle(
-        recoilAxis,
-        recoilAngle,
-      )
-      camera.quaternion.multiplyQuaternions(recoilQuaternion, camera.quaternion)
-    }
   })
 }
 

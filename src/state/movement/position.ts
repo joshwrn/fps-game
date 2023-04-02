@@ -43,6 +43,7 @@ export const useUpdatePlayerPosition = ({
     () => playerApi.velocity.subscribe((v) => (velocity.current = v)),
     [],
   )
+
   useFrame(() => {
     playerRef.current?.getWorldPosition(camera.position)
     // move backward / forward

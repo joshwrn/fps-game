@@ -2,6 +2,7 @@ import { useRef } from 'react'
 
 import type { SphereProps } from '@react-three/cannon'
 import { useSphere } from '@react-three/cannon'
+import { useFrame, useThree } from '@react-three/fiber'
 import type { Group, Mesh } from 'three'
 
 import Flashlight from './Flashlight/Flashlight'

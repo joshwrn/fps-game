@@ -1,6 +1,5 @@
-import { useState } from 'react'
-
 import { useFrame, useThree } from '@react-three/fiber'
+import useSound from 'use-sound'
 
 import { useWeaponStore } from '.'
 import { useRecoilStore } from './recoil'
@@ -17,12 +16,16 @@ export const useFireBullet = (): void => {
     lastShotAt,
     setLastShotAt,
   } = useWeaponStore()
-  const { setBulletsFired } = useRecoilStore()
+  const { setBulletsFired, bulletsFired } = useRecoilStore()
   const { reload } = useReload()
   const clock = useThree((state) => state.clock)
+  const [play] = useSound(`/sounds/weapon/shot.wav`, {
+    volume: 0.8 + bulletsFired * 0.01,
+    playbackRate: 1 + bulletsFired * 0.001,
+  })
 
   useFrame(() => {
-    const readyToShoot = lastShotAt + 0.1 < clock.getElapsedTime()
+    const readyToShoot = lastShotAt + 0.12 < clock.getElapsedTime()
 
     // console.log(lastShotAt, clock.getElapsedTime(), readyToShoot)
 
@@ -31,6 +34,7 @@ export const useFireBullet = (): void => {
       shootBullet()
       setIsFiringBullet(true)
       setBulletsFired((prev) => prev + 1)
+      play()
     }
 
     if (!isShooting || !readyToShoot) {
@@ -46,7 +50,7 @@ export const useFireBullet = (): void => {
       setIsFiringBullet(false)
     }
 
-    if (ammo === 0) {
+    if (ammo === 0 && !isReloading) {
       reload()
     }
   })
