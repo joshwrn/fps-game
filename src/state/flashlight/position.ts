@@ -23,12 +23,10 @@ export const useUpdateFlashlightPosition = ({
   useFrame((state) => {
     if (flashlightRef?.current?.children[0]) {
       // move flashlight
-      const randomNumbers = isSprinting() ? [10, 20] : [25, 50]
       flashlightRef.current.children[0].rotation.x = THREE.MathUtils.lerp(
         flashlightRef.current.children[0].rotation.x,
-        Math.sin(playerSpeed.length() * state.clock.elapsedTime * 10) /
-          randomNumber(randomNumbers[0], randomNumbers[1]),
-        0.1,
+        Math.sin((playerSpeed.length() / 2) * state.clock.elapsedTime) * 0.1,
+        0.01,
       )
       flashlightRef.current.rotation.copy(camera.rotation)
       flashlightRef.current.position
