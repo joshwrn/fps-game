@@ -1,18 +1,48 @@
 import type { ReactElement } from 'react'
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import styled from '@emotion/styled'
 import { Physics, usePlane } from '@react-three/cannon'
+import type { PointerLockControlsProps } from '@react-three/drei'
 import { PointerLockControls, Environment } from '@react-three/drei'
-import { Canvas } from '@react-three/fiber'
+import { Canvas, useThree } from '@react-three/fiber'
 import type { Mesh } from 'three'
+import { create } from 'zustand'
 
 import { Box } from './Box'
 import Player from './Player'
 import { useWeaponStore } from '@/state/weapon'
 
+export const useObjectStore = create<{
+  objects: any[]
+  addObject: (object: any) => void
+}>((set) => ({
+  objects: [],
+  addObject: (object) => set((s) => ({ objects: [...s.objects, object] })),
+}))
+
+export const usePointerControlsStore = create<{
+  controlsRef: React.MutableRefObject<PointerLockControlsProps | null>
+  setControlsRef: (
+    ref: React.MutableRefObject<PointerLockControlsProps | null>,
+  ) => void
+}>((set) => ({
+  controlsRef: React.createRef<PointerLockControlsProps>(),
+  setControlsRef: (ref) => set(() => ({ controlsRef: ref })),
+}))
+
 export const Scene = (): ReactElement => {
   const [setIsShooting] = useWeaponStore((s) => [s.setIsShooting])
+  const controlsRef = React.useRef<PointerLockControlsProps>(null)
+
+  const { setControlsRef } = usePointerControlsStore((s) => ({
+    setControlsRef: s.setControlsRef,
+  }))
+
+  useEffect(() => {
+    if (!controlsRef.current) return
+    setControlsRef(controlsRef)
+  }, [controlsRef.current])
 
   return (
     <CanvasContainer>
@@ -31,7 +61,8 @@ export const Scene = (): ReactElement => {
           <Box position={[5, 10, 0]} />
           <Ground />
         </Physics>
-        <PointerLockControls />
+        {/* @ts-expect-error */}
+        <PointerLockControls ref={controlsRef} />
       </Canvas>
     </CanvasContainer>
   )
@@ -39,6 +70,12 @@ export const Scene = (): ReactElement => {
 
 export const Ground = (): React.ReactElement => {
   const [ref] = usePlane<Mesh>(() => ({ rotation: [-Math.PI / 2, 0, 0] }))
+  const { addObject } = useObjectStore()
+
+  useEffect(() => {
+    addObject(ref.current)
+  }, [ref])
+
   return (
     <mesh ref={ref} receiveShadow>
       <planeGeometry args={[100, 100]} />
