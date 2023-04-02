@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import { useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import { create } from 'zustand'
@@ -15,27 +17,56 @@ export const useRecoilStore = create<{
 }))
 
 export const useRecoil = (): void => {
-  const { isShooting } = useWeaponStore((s) => ({
+  const { isShooting, lastShotAt } = useWeaponStore((s) => ({
     isShooting: s.isShooting,
+    lastShotAt: s.lastShotAt,
   }))
   const { bulletsFired } = useRecoilStore((s) => ({
     bulletsFired: s.bulletsFired,
-    setBulletsFired: s.setBulletsFired,
   }))
-  const { camera } = useThree()
+  const { camera, clock } = useThree()
+
+  const [bulletsFireBeforeStop, setBulletsFireBeforeStop] = useState(0)
 
   useFrame(() => {
     if (isShooting) {
       // horizontal recoil
-      const quat = new THREE.Quaternion()
-      const recoilAngle = getRecoilPattern(bulletsFired, `x`) * 0.1
-      quat.setFromAxisAngle(new THREE.Vector3(0, 1, 0), recoilAngle)
-      camera.quaternion.multiplyQuaternions(quat, camera.quaternion)
+      const recoilAngle = getRecoilPattern(bulletsFired, `x`) * 0.5
+      const recoilAxis = new THREE.Vector3(0, 1, 0)
+      const recoilQuaternion = new THREE.Quaternion().setFromAxisAngle(
+        recoilAxis,
+        recoilAngle,
+      )
+      camera.quaternion.multiplyQuaternions(recoilQuaternion, camera.quaternion)
     }
 
     if (isShooting) {
       // vertical recoil
       const recoilAngle = getRecoilPattern(bulletsFired, `y`) * 0.1
+      const recoilAxis = new THREE.Vector3(1, 0, 0)
+      const recoilQuaternion = new THREE.Quaternion().setFromAxisAngle(
+        recoilAxis,
+        recoilAngle,
+      )
+      camera.quaternion.multiply(recoilQuaternion)
+
+      setBulletsFireBeforeStop(bulletsFired)
+    }
+
+    if (
+      !isShooting &&
+      bulletsFireBeforeStop > 0 &&
+      lastShotAt + 0.1 < clock.getElapsedTime() &&
+      lastShotAt + 2 > clock.getElapsedTime()
+    ) {
+      // reset recoil
+      const amplitude =
+        -0.00005 *
+        bulletsFireBeforeStop *
+        (2 - (clock.getElapsedTime() - lastShotAt))
+      const recoilAngle = amplitude
+      // Math.cos((clock.getElapsedTime() - lastShotAt) * 10) * amplitude
+
       const recoilAxis = new THREE.Vector3(1, 0, 0)
       const recoilQuaternion = new THREE.Quaternion().setFromAxisAngle(
         recoilAxis,

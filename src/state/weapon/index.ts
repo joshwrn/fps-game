@@ -19,14 +19,13 @@ export const useWeaponStore = create<{
   isFiringBullet: boolean
   setIsFiringBullet: (isFiring: boolean) => void
   setIsReloading: (isReloading: boolean) => void
-  startedShootingAt: number | null
-  setStartedShootingAt: (startedShootingAt: number) => void
+  lastShotAt: number
+  setLastShotAt: (lastShotAt: number) => void
 }>((set) => ({
   isShooting: false,
   isReloading: false,
-  startedShootingAt: null,
-  setStartedShootingAt: (startedShootingAt: number) =>
-    set(() => ({ startedShootingAt })),
+  lastShotAt: 0,
+  setLastShotAt: (lastShotAt: number) => set(() => ({ lastShotAt })),
   ammo: 30,
   setIsShooting: (isShooting: boolean) =>
     set((state) => ({

@@ -34,7 +34,7 @@ export const Box: FC<MeshProps> = (props) => {
           ray.direction.z * 10,
         )
         api.velocity.set(v.x, v.y, v.z)
-        setHealth((s) => s - 10)
+        setHealth((s) => s - 5)
       }
     }
   })

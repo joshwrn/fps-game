@@ -14,17 +14,20 @@ export const useFireBullet = (): void => {
     setIsFiringBullet,
     setIsShooting,
     isReloading,
+    lastShotAt,
+    setLastShotAt,
   } = useWeaponStore()
   const { setBulletsFired } = useRecoilStore()
   const { reload } = useReload()
-  const [lastShot, setLastShot] = useState(0)
   const clock = useThree((state) => state.clock)
 
   useFrame(() => {
-    const readyToShoot = lastShot + 0.1 < clock.getElapsedTime()
+    const readyToShoot = lastShotAt + 0.1 < clock.getElapsedTime()
+
+    // console.log(lastShotAt, clock.getElapsedTime(), readyToShoot)
 
     if (isShooting && ammo > 0 && readyToShoot) {
-      setLastShot(clock.getElapsedTime())
+      setLastShotAt(clock.getElapsedTime())
       shootBullet()
       setIsFiringBullet(true)
       setBulletsFired((prev) => prev + 1)
