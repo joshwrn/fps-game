@@ -30,6 +30,9 @@ export const useRecoil = (): void => {
   const [bulletsFiredBeforeStop, setBulletsFiredBeforeStop] = useState(0)
 
   useFrame(() => {
+    // is applying more recoil based on framerate
+    // TODO: fix this
+    // double fps = recoil is called 2x as much
     if (isShooting) {
       // horizontal recoil
       const recoilAngle = getRecoilPattern(bulletsFired, `x`) * 0.5
