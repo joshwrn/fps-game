@@ -3,9 +3,8 @@ import React, { useEffect } from 'react'
 
 import styled from '@emotion/styled'
 import { Physics, usePlane } from '@react-three/cannon'
-import type { PointerLockControlsProps } from '@react-three/drei'
 import { PointerLockControls, Environment } from '@react-three/drei'
-import { Canvas, useThree } from '@react-three/fiber'
+import { Canvas } from '@react-three/fiber'
 import type { Mesh } from 'three'
 import { create } from 'zustand'
 
@@ -14,35 +13,26 @@ import Player from './Player'
 import { useWeaponStore } from '@/state/weapon'
 
 export const useObjectStore = create<{
-  objects: any[]
-  addObject: (object: any) => void
+  objects: Mesh[]
+  addObject: (object: Mesh) => void
 }>((set) => ({
   objects: [],
   addObject: (object) => set((s) => ({ objects: [...s.objects, object] })),
 }))
 
-export const usePointerControlsStore = create<{
-  controlsRef: React.MutableRefObject<PointerLockControlsProps | null>
-  setControlsRef: (
-    ref: React.MutableRefObject<PointerLockControlsProps | null>,
-  ) => void
-}>((set) => ({
-  controlsRef: React.createRef<PointerLockControlsProps>(),
-  setControlsRef: (ref) => set(() => ({ controlsRef: ref })),
-}))
-
 export const Scene = (): ReactElement => {
   const [setIsShooting] = useWeaponStore((s) => [s.setIsShooting])
-  const controlsRef = React.useRef<PointerLockControlsProps>(null)
 
-  const { setControlsRef } = usePointerControlsStore((s) => ({
-    setControlsRef: s.setControlsRef,
-  }))
-
-  useEffect(() => {
-    if (!controlsRef.current) return
-    setControlsRef(controlsRef)
-  }, [controlsRef.current])
+  const handleClick = (event: React.MouseEvent<HTMLDivElement>): void => {
+    const leftClick = event.button === 0
+    const mousedown = event.type === `mousedown`
+    if (leftClick && mousedown) {
+      setIsShooting(true)
+    }
+    if (leftClick && !mousedown) {
+      setIsShooting(false)
+    }
+  }
 
   return (
     <CanvasContainer>
@@ -50,8 +40,8 @@ export const Scene = (): ReactElement => {
         shadows
         gl={{ alpha: false }}
         camera={{ fov: 80 }}
-        onMouseDown={() => setIsShooting(true)}
-        onMouseUp={() => setIsShooting(false)}
+        onMouseDown={handleClick}
+        onMouseUp={handleClick}
       >
         {/* <fog attach="fog" args={[`black`, 0, 150]} /> */}
         <Environment preset="night" />
@@ -61,8 +51,7 @@ export const Scene = (): ReactElement => {
           <Box position={[5, 10, 0]} />
           <Ground />
         </Physics>
-        {/* @ts-expect-error */}
-        <PointerLockControls ref={controlsRef} />
+        <PointerLockControls />
       </Canvas>
     </CanvasContainer>
   )
@@ -73,6 +62,7 @@ export const Ground = (): React.ReactElement => {
   const { addObject } = useObjectStore()
 
   useEffect(() => {
+    if (!ref.current) return
     addObject(ref.current)
   }, [ref])
 

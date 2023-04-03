@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+
 import { useFrame, useThree } from '@react-three/fiber'
 import useSound from 'use-sound'
 
@@ -15,6 +17,7 @@ export const useFireBullet = (): void => {
     isReloading,
     lastShotAt,
     setLastShotAt,
+    isFiringBullet,
   } = useWeaponStore()
   const { setBulletsFired, bulletsFired } = useRecoilStore()
   const { reload } = useReload()
@@ -24,34 +27,41 @@ export const useFireBullet = (): void => {
     playbackRate: 1 + bulletsFired * 0.001,
   })
 
-  useFrame(() => {
-    const readyToShoot = lastShotAt + 0.12 < clock.getElapsedTime()
+  useEffect(() => {
+    if (isFiringBullet) {
+      play()
+    }
+  }, [isFiringBullet])
 
-    // console.log(lastShotAt, clock.getElapsedTime(), readyToShoot)
+  useEffect(() => {
+    if (ammo === 0 || isReloading) {
+      setIsShooting(false)
+      setIsFiringBullet(false)
+    }
+    if (ammo === 0 && !isReloading) {
+      reload()
+    }
+  }, [ammo, isReloading])
+
+  useEffect(() => {
+    if (!isShooting) {
+      setBulletsFired(() => 0)
+    }
+  }, [isShooting])
+
+  useFrame(() => {
+    // need to do this independent of frame rate
+    const readyToShoot = lastShotAt + 0.12 < clock.getElapsedTime()
 
     if (isShooting && ammo > 0 && readyToShoot) {
       setLastShotAt(clock.getElapsedTime())
       shootBullet()
       setIsFiringBullet(true)
       setBulletsFired((prev) => prev + 1)
-      play()
     }
 
     if (!isShooting || !readyToShoot) {
       setIsFiringBullet(false)
-    }
-
-    if (!isShooting) {
-      setBulletsFired(() => 0)
-    }
-
-    if (ammo === 0 || isReloading) {
-      setIsShooting(false)
-      setIsFiringBullet(false)
-    }
-
-    if (ammo === 0 && !isReloading) {
-      reload()
     }
   })
 }

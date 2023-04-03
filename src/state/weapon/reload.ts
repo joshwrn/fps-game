@@ -6,7 +6,7 @@ import { useWeaponStore } from '.'
 export const RELOAD_TIME = 1000
 
 export const useReload = (): { reload: VoidFunction } => {
-  const { reload, setIsReloading } = useWeaponStore()
+  const { reload, setIsReloading, isReloading } = useWeaponStore()
   const [playReload] = useSound(`/sounds/weapon/reload.wav`, {
     volume: 0.7,
   })
@@ -15,6 +15,7 @@ export const useReload = (): { reload: VoidFunction } => {
   })
   const handleReload = () => {
     // interval to simulate reloading
+    if (isReloading) return
     setIsReloading(true)
     playReload()
     const interval = setInterval(() => {

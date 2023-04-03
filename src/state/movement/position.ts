@@ -8,7 +8,7 @@ import type { Mesh } from 'three'
 import { create } from 'zustand'
 
 import { isSprinting, useMovementStore } from './controls'
-import { useObjectStore, usePointerControlsStore } from '@/components/Scene'
+import { useObjectStore } from '@/components/Scene'
 
 const SPEED = 20
 const direction = new THREE.Vector3()
