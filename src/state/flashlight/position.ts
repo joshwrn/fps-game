@@ -21,11 +21,12 @@ export const useUpdateFlashlightPosition = ({
   const { camera } = useThree()
   const { playerSpeed } = usePlayerSpeedStore((s) => s)
   useFrame((state) => {
+    const currentTime = new Date().getTime() / 1000
     if (flashlightRef?.current?.children[0]) {
       // move flashlight
       flashlightRef.current.children[0].rotation.x = THREE.MathUtils.lerp(
         flashlightRef.current.children[0].rotation.x,
-        Math.sin((playerSpeed.length() / 2) * state.clock.elapsedTime) * 0.1,
+        Math.sin((playerSpeed.length() / 2) * currentTime) * 0.1,
         0.01,
       )
       flashlightRef.current.rotation.copy(camera.rotation)

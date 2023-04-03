@@ -46,7 +46,7 @@ export const Scene = (): ReactElement => {
         {/* <fog attach="fog" args={[`black`, 0, 150]} /> */}
         <Environment preset="night" />
         <ambientLight intensity={0.5} />
-        <Physics gravity={[0, -60, 0]}>
+        <Physics gravity={[0, -100, 0]}>
           <Player />
           <Box position={[5, 10, 0]} />
           <Ground />

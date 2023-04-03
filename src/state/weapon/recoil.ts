@@ -25,9 +25,7 @@ export const useRecoil = (): void => {
   const { bulletsFired } = useRecoilStore((s) => ({
     bulletsFired: s.bulletsFired,
   }))
-  const { camera, clock } = useThree()
-
-  const { playerSpeed } = usePlayerSpeedStore((s) => s)
+  const { camera } = useThree()
 
   const [bulletsFiredBeforeStop, setBulletsFiredBeforeStop] = useState(0)
 
@@ -56,18 +54,17 @@ export const useRecoil = (): void => {
       setBulletsFiredBeforeStop(bulletsFired)
     }
 
+    const currentTime = new Date().getTime() / 1000
     if (
       !isShooting &&
       bulletsFiredBeforeStop > 0 &&
-      lastShotAt + 0.1 < clock.getElapsedTime() &&
-      lastShotAt + 2 > clock.getElapsedTime()
+      lastShotAt + 0.1 < currentTime &&
+      lastShotAt + 2 > currentTime
     ) {
       // reset recoil
       const random = randomNumber(-0.00004, -1)
       const amplitude =
-        random *
-        bulletsFiredBeforeStop *
-        (2 - (clock.getElapsedTime() - lastShotAt)) ** 4
+        random * bulletsFiredBeforeStop * (2 - (currentTime - lastShotAt)) ** 4
       const recoilAngle = amplitude
       // Math.cos((clock.getElapsedTime() - lastShotAt) * 10) * amplitude
 

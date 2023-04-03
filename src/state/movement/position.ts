@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { Globals } from '@react-spring/three'
 import type { PublicApi } from '@react-three/cannon'
@@ -8,7 +8,9 @@ import type { Mesh } from 'three'
 import { create } from 'zustand'
 
 import { isSprinting, useMovementStore } from './controls'
+import { useFootstep } from './sound'
 import { useObjectStore } from '@/components/Scene'
+import { randomNumber } from '@/utils/randomNumber'
 
 const SPEED = 20
 const direction = new THREE.Vector3()
@@ -59,6 +61,9 @@ export const useUpdatePlayerPosition = ({
     playerApi.velocity.subscribe((v) => (velocity.current = v))
   }, [])
 
+  const [lastFootstep, setLastFootstep] = useState(0)
+  const footsteps = useFootstep()
+
   useFrame(() => {
     playerRef.current?.getWorldPosition(camera.position)
     // move backward / forward
@@ -68,10 +73,19 @@ export const useUpdatePlayerPosition = ({
     direction
       .subVectors(frontVector, sideVector)
       .normalize()
-      .multiplyScalar(SPEED * (isSprinting() ? 2 : 1))
+      .multiplyScalar(SPEED * (isSprinting() ? 1.5 : 1))
       .applyEuler(camera.rotation)
     speed.fromArray(velocity.current)
     playerApi.velocity.set(direction.x, velocity.current[1], direction.z)
+
+    const currentTime = new Date().getTime() / 1000
+
+    const isMoving = direction.x !== 0 || direction.z !== 0
+    const timeBetweenFootsteps = isSprinting() ? 0.35 : 0.5
+    if (lastFootstep + timeBetweenFootsteps < currentTime && isMoving && !jump) {
+      setLastFootstep(currentTime)
+      footsteps[randomNumber(0, 4)]()
+    }
 
     // jump
     raycaster.ray.origin.copy(

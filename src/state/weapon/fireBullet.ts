@@ -21,7 +21,6 @@ export const useFireBullet = (): void => {
   } = useWeaponStore()
   const { setBulletsFired, bulletsFired } = useRecoilStore()
   const { reload } = useReload()
-  const clock = useThree((state) => state.clock)
   const [play] = useSound(`/sounds/weapon/shot.wav`, {
     volume: 0.8 + bulletsFired * 0.01,
     playbackRate: 1 + bulletsFired * 0.001,
@@ -51,10 +50,11 @@ export const useFireBullet = (): void => {
 
   useFrame(() => {
     // need to do this independent of frame rate
-    const readyToShoot = lastShotAt + 0.12 < clock.getElapsedTime()
+    const currentTime = new Date().getTime() / 1000
+    const readyToShoot = lastShotAt + 0.11 < currentTime
 
-    if (isShooting && ammo > 0 && readyToShoot) {
-      setLastShotAt(clock.getElapsedTime())
+    if (isShooting && ammo > 0 && readyToShoot && !isFiringBullet) {
+      setLastShotAt(currentTime)
       shootBullet()
       setIsFiringBullet(true)
       setBulletsFired((prev) => prev + 1)
