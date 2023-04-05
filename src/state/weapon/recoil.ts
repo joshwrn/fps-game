@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
@@ -18,22 +18,22 @@ export const useRecoilStore = create<{
 }))
 
 export const useRecoil = (): void => {
-  const { isShooting, lastShotAt } = useWeaponStore((s) => ({
+  const { isShooting, lastShotAt, isFiringBullet } = useWeaponStore((s) => ({
     isShooting: s.isShooting,
     lastShotAt: s.lastShotAt,
+    isFiringBullet: s.isFiringBullet,
   }))
   const { bulletsFired } = useRecoilStore((s) => ({
     bulletsFired: s.bulletsFired,
   }))
   const { camera } = useThree()
 
-  const [bulletsFiredBeforeStop, setBulletsFiredBeforeStop] = useState(0)
+  const bulletsFiredBeforeStop = useRef(0)
+  const timePassed = useRef(0)
 
-  useFrame(() => {
-    // is applying more recoil based on framerate
-    // TODO: fix this
-    // double fps = recoil is called 2x as much
-    if (isShooting) {
+  useFrame((state, delta) => {
+    timePassed.current += delta
+    if (isShooting && timePassed.current > 0.015) {
       // horizontal recoil
       const recoilAngle = getRecoilPattern(bulletsFired, `x`) * 0.5
       const recoilAxis = new THREE.Vector3(0, 1, 0)
@@ -42,32 +42,35 @@ export const useRecoil = (): void => {
         recoilAngle,
       )
       camera.quaternion.multiplyQuaternions(recoilQuaternion, camera.quaternion)
-    }
 
-    if (isShooting) {
       // vertical recoil
-      const recoilAngle = getRecoilPattern(bulletsFired, `y`) * 0.1
-      const recoilAxis = new THREE.Vector3(1, 0, 0)
-      const recoilQuaternion = new THREE.Quaternion().setFromAxisAngle(
-        recoilAxis,
-        recoilAngle,
+      const recoilAngleY = getRecoilPattern(bulletsFired, `y`) * 0.1
+      const recoilAxisY = new THREE.Vector3(1, 0, 0)
+      const recoilQuaternionY = new THREE.Quaternion().setFromAxisAngle(
+        recoilAxisY,
+        recoilAngleY,
       )
-      camera.quaternion.multiply(recoilQuaternion)
+      camera.quaternion.multiply(recoilQuaternionY)
 
-      setBulletsFiredBeforeStop(bulletsFired)
+      bulletsFiredBeforeStop.current = bulletsFired
+      timePassed.current = 0
     }
 
     const currentTime = new Date().getTime() / 1000
     if (
       !isShooting &&
-      bulletsFiredBeforeStop > 0 &&
+      bulletsFiredBeforeStop.current > 0 &&
       lastShotAt + 0.1 < currentTime &&
-      lastShotAt + 2 > currentTime
+      lastShotAt + 2 > currentTime &&
+      timePassed.current > 0.015
     ) {
+      timePassed.current = 0
       // reset recoil
       const random = randomNumber(-0.00004, -1)
       const amplitude =
-        random * bulletsFiredBeforeStop * (2 - (currentTime - lastShotAt)) ** 4
+        random *
+        bulletsFiredBeforeStop.current *
+        (2 - (currentTime - lastShotAt)) ** 4
       const recoilAngle = amplitude
       // Math.cos((clock.getElapsedTime() - lastShotAt) * 10) * amplitude
 
