@@ -8,10 +8,10 @@ export const RELOAD_TIME = 1000
 export const useReload = (): { reload: VoidFunction } => {
   const { reload, setIsReloading, isReloading } = useWeaponStore()
   const [playReload] = useSound(`/sounds/weapon/reload.wav`, {
-    volume: 0.7,
+    volume: 0.5,
   })
   const [playBolt] = useSound(`/sounds/weapon/bolt.wav`, {
-    volume: 0.7,
+    volume: 0.5,
   })
   const handleReload = () => {
     // interval to simulate reloading

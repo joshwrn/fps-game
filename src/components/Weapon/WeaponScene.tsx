@@ -38,28 +38,3 @@ export const Weapon: FC = () => {
     </>
   )
 }
-
-export const WeaponScene: FC = () => {
-  const { flashlightIsOn } = useFlashlightStore((s) => ({
-    flashlightIsOn: s.isOn,
-  }))
-  return (
-    <CanvasContainerGun>
-      <Canvas camera={{ fov: 35 }}>
-        <pointLight position={[2, 2, 1]} intensity={flashlightIsOn ? 10 : 0} />
-        <Environment preset="night" />
-        <Weapon />
-      </Canvas>
-    </CanvasContainerGun>
-  )
-}
-
-const CanvasContainerGun = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-  z-index: 1;
-`
