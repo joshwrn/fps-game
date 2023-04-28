@@ -1,11 +1,11 @@
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 
-import { useFrame, useThree } from '@react-three/fiber'
+import { useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import { create } from 'zustand'
 
 import { useWeaponStore } from '.'
-import { usePlayerSpeedStore } from '../movement/position'
+import { usePhysicsFrame } from '@/hooks/usePhysicsFrame'
 import { randomNumber } from '@/utils/randomNumber'
 
 export const useRecoilStore = create<{
@@ -18,7 +18,7 @@ export const useRecoilStore = create<{
 }))
 
 export const useRecoil = (): void => {
-  const { isShooting, lastShotAt, isFiringBullet } = useWeaponStore((s) => ({
+  const { isShooting, lastShotAt } = useWeaponStore((s) => ({
     isShooting: s.isShooting,
     lastShotAt: s.lastShotAt,
     isFiringBullet: s.isFiringBullet,
@@ -29,11 +29,9 @@ export const useRecoil = (): void => {
   const { camera } = useThree()
 
   const bulletsFiredBeforeStop = useRef(0)
-  const timePassed = useRef(0)
 
-  useFrame((state, delta) => {
-    timePassed.current += delta
-    if (isShooting && timePassed.current > 0.015) {
+  usePhysicsFrame(({ shouldUpdate }) => {
+    if (isShooting && shouldUpdate) {
       // horizontal recoil
       const recoilAngle = getRecoilPattern(bulletsFired, `x`) * 0.5
       const recoilAxis = new THREE.Vector3(0, 1, 0)
@@ -53,7 +51,6 @@ export const useRecoil = (): void => {
       camera.quaternion.multiply(recoilQuaternionY)
 
       bulletsFiredBeforeStop.current = bulletsFired
-      timePassed.current = 0
     }
 
     const currentTime = new Date().getTime() / 1000
@@ -62,9 +59,8 @@ export const useRecoil = (): void => {
       bulletsFiredBeforeStop.current > 0 &&
       lastShotAt + 0.1 < currentTime &&
       lastShotAt + 2 > currentTime &&
-      timePassed.current > 0.015
+      shouldUpdate
     ) {
-      timePassed.current = 0
       // reset recoil
       const random = randomNumber(-0.00004, -1)
       const amplitude =
@@ -72,7 +68,6 @@ export const useRecoil = (): void => {
         bulletsFiredBeforeStop.current *
         (2 - (currentTime - lastShotAt)) ** 4
       const recoilAngle = amplitude
-      // Math.cos((clock.getElapsedTime() - lastShotAt) * 10) * amplitude
 
       const recoilAxis = new THREE.Vector3(1, 0, 0)
       const recoilQuaternion = new THREE.Quaternion().setFromAxisAngle(

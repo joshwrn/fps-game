@@ -10,6 +10,7 @@ import { create } from 'zustand'
 import { isSprinting, useMovementStore } from './controls'
 import { useFootstep } from './sound'
 import { useObjectStore } from '@/components/Scene'
+import { usePhysicsFrame } from '@/hooks/usePhysicsFrame'
 import { randomNumber } from '@/utils/randomNumber'
 
 const SPEED = 20
@@ -64,19 +65,21 @@ export const useUpdatePlayerPosition = ({
   const [lastFootstep, setLastFootstep] = useState(0)
   const footsteps = useFootstep()
 
-  useFrame(() => {
+  usePhysicsFrame(({ shouldUpdate }) => {
     playerRef.current?.getWorldPosition(camera.position)
     // move backward / forward
-    frontVector.set(0, 0, Number(backward) - Number(forward))
-    // move side to side
-    sideVector.set(Number(left) - Number(right), 0, 0)
-    direction
-      .subVectors(frontVector, sideVector)
-      .normalize()
-      .multiplyScalar(SPEED * (isSprinting() ? 1.5 : 1))
-      .applyEuler(camera.rotation)
-    speed.fromArray(velocity.current)
-    playerApi.velocity.set(direction.x, velocity.current[1], direction.z)
+    if (shouldUpdate) {
+      frontVector.set(0, 0, Number(backward) - Number(forward))
+      // move side to side
+      sideVector.set(Number(left) - Number(right), 0, 0)
+      direction
+        .subVectors(frontVector, sideVector)
+        .normalize()
+        .multiplyScalar(SPEED * (isSprinting() ? 1.5 : 1))
+        .applyEuler(camera.rotation)
+      speed.fromArray(velocity.current)
+      playerApi.velocity.set(direction.x, velocity.current[1], direction.z)
+    }
 
     const currentTime = new Date().getTime() / 1000
 

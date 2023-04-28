@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-import { useFrame, useThree } from '@react-three/fiber'
+import { useFrame } from '@react-three/fiber'
 import useSound from 'use-sound'
 
 import { useWeaponStore } from '.'
