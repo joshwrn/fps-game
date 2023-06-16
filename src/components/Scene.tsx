@@ -44,7 +44,7 @@ export const Scene = (): ReactElement => {
         onMouseUp={handleClick}
       >
         {/* <fog attach="fog" args={[`black`, 0, 150]} /> */}
-        <Environment preset="night" />
+        {/* <Environment preset="night" /> */}
         <ambientLight intensity={0.5} />
         <Physics gravity={[0, -100, 0]}>
           <Player />

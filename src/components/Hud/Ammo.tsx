@@ -42,15 +42,9 @@ const Progress = styled.div`
 `
 
 const Container = styled.div`
-  position: absolute;
-  bottom: 50px;
-  right: 5%;
   color: #ffffff70;
   font-size: 2rem;
   font-weight: 700;
-  z-index: 999;
-  pointer-events: none;
-  width: 100px;
   height: 50px;
   display: flex;
   justify-content: center;

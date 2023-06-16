@@ -29,6 +29,7 @@
     "react-dom": "18.2.0",
     "react-hotkeys": "^2.0.0",
     "react-hotkeys-hook": "^4.3.8",
+    "react-icons": "^4.9.0",
     "three": "^0.150.1",
     "typescript": "5.0.2",
     "use-sound": "^4.0.1",
